@@ -2,13 +2,9 @@ import scrapy
 
 class JobindexSpider(scrapy.Spider):
     name = 'jobindex'
-
-    def start_requests(self):
-        urls = [
-            'https://www.jobindex.dk/jobsoegning/it/virksomhedssystemer/storkoebenhavn',
-        ]
-        for url in urls:
-            yield scrapy.Request(url=url, callback=self.parse)
+    start_urls = [
+        'https://www.jobindex.dk/jobsoegning/it/virksomhedssystemer/storkoebenhavn'
+    ]
 
     def parse(self, response):
         page = response.url.split("/")[-1]
@@ -17,4 +13,5 @@ class JobindexSpider(scrapy.Spider):
             f.write(response.body)
         self.log('Saved file %s' % filename)
 
-
+## Xpath to select Apply buttons links
+## //a[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),"apply")] | //button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),"apply")] 
