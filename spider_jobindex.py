@@ -24,7 +24,6 @@ class JobindexSpider(scrapy.Spider):
         key_words = ["apply", "interest"] #this should be a dynamic list
         xpath_base = '//{}[contains(translate(., "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"{}")]'
         total_combination = len(nodes) * len(key_words)
-        xpath_query = ''
 
         ## build the key_word series (0, 0, 1, 1)
         key_words_series = []
@@ -35,24 +34,14 @@ class JobindexSpider(scrapy.Spider):
             key_words_series.append(counter)
         
         ## build the xpath query with the combination of nodes and key_words 
-        ## then concatenate it in a string witgh the ' | ' operator
+        ## then concatenate it in a string with the ' | ' operator
         xpath_query = ''
         for i in range(total_combination):
             xpath_query += xpath_base.format(nodes[i % len(nodes)], key_words[key_words_series[i]]) + " | "
-            
+
         xpath_query = xpath_query[:-3]
-      
-        #for node in response.xpath(''):
-            #yield {
-                
-            #}
 
-# response.xpath('//a[contains(translate(., "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"apply")] | //button[contains(translate(., "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"apply")]').get()
-
-
-key_words_series = []
-counter = 0
-for i in range(4):
-    if counter != i // 2:
-        counter += 1
-    key_words_series.append(counter)
+        for node in response.xpath('xpath_query'):
+            yield {
+                'link': node
+            }
