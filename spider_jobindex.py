@@ -1,4 +1,5 @@
 import scrapy
+from math import sqrt 
 
 class JobindexSpider(scrapy.Spider):
     name = 'jobindex'
@@ -18,23 +19,40 @@ class JobindexSpider(scrapy.Spider):
 # - apply url
 # - the job title
     def parse(self, response):
-        #get combination of xpaths for apply links likely to happen within the nodes and keywords
-        nodes = ["a", "href"]
-        key_words = ["apply", "interest"]
+        ## get combination of xpaths for apply links likely to happen within the nodes and keywords
+        nodes = ["a", "href"] #this should be a dynamic list
+        key_words = ["apply", "interest"] #this should be a dynamic list
         xpath_base = '//{}[contains(translate(., "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"{}")]'
         total_combination = len(nodes) * len(key_words)
         xpath_query = ''
+
+        ## build the key_word series (0, 0, 1, 1)
+        key_words_series = []
+        counter = 0
         for i in range(total_combination):
-            xpath_query = xpath_base.format(nodes[i % len(nodes)], key_words[i // 2])
-
-
-        xpath_query = xpath_base.format(nodes[0], key_words[0])
-        xpath_query
-        for node in response.xpath(''):
-            yield {
-
-            }
+            if counter != i // int(sqrt(total_combination)):
+                counter += 1
+            key_words_series.append(counter)
+        
+        ## build the xpath query with the combination of nodes and key_words 
+        ## then concatenate it in a string witgh the ' | ' operator
+        xpath_query = ''
+        for i in range(total_combination):
+            xpath_query += xpath_base.format(nodes[i % len(nodes)], key_words[key_words_series[i]]) + " | "
+            
+        xpath_query = xpath_query[:-3]
+      
+        #for node in response.xpath(''):
+            #yield {
+                
+            #}
 
 # response.xpath('//a[contains(translate(., "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"apply")] | //button[contains(translate(., "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"apply")]').get()
 
 
+key_words_series = []
+counter = 0
+for i in range(4):
+    if counter != i // 2:
+        counter += 1
+    key_words_series.append(counter)
